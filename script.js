@@ -1,6 +1,6 @@
 // Global state
 let currentUser = null;
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = 'https://05d8-2001-1c00-b8b-e000-8580-e-4649-dc15.ngrok-free.app/api';
 const HUGGINGFACE_API_KEY = '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';
 
 // Helper function for authenticated fetch requests
