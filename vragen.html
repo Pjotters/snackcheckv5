@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vragen - SnackCheck</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .faq-item {
+            background: #fff;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: #fff;
+        }
+        
+        .faq-answer.show {
+            padding: 20px;
+            max-height: 500px;
+        }
+        
+        .contact-form {
+            margin-top: 40px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .contact-form h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>SnackCheck</h1>
+                <button class="menu-toggle" id="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="food-loggen.html" class="nav-item">
+                    <i class="fas fa-utensils"></i> Voedsel Loggen
+                </a>
+                <a href="gallery.html" class="nav-item">
+                    <i class="fas fa-images"></i> Gallery
+                </a>
+                <a href="calorie-checker.html" class="nav-item">
+                    <i class="fas fa-search"></i> Calorie Checker
+                </a>
+                <a href="food-comparison.html" class="nav-item">
+                    <i class="fas fa-balance-scale"></i> Voedsel Vergelijken
+                </a>
+                <a href="vragen.html" class="nav-item active">
+                    <i class="fas fa-question-circle"></i> Vragen
+                </a>
+            </nav>
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-details">
+                    <span class="user-name" id="sidebar-username">Gebruiker</span>
+                    <span class="user-class" id="sidebar-class">Klas: -</span>
+                </div>
+                <button class="logout-btn" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="header-left">
+                    <h2>Veelgestelde Vragen</h2>
+                </div>
+            </header>
+
+            <div class="content-container">
+                <div class="faq-container">
+
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            Is het onderzoek anoniem?
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Ja, het onderzoek is anoniem. Je kunt je voedsel toevoegen, calorieën bijhouden en je voortgang volgen. Wij kunnen per account alleen het aantal punten en het leaderboard zien.  </p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            Waarom accounts bij SnackCheck-onderzoek?
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p>De accounts die zijn aangemaakt per klas zijn voor de doeleinden van het onderzoek en voor het scheiden van de informatie. Wij kunnen niet zien wie wat eet. </p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            Hoe werkt SnackCheck?
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p>SnackCheck helpt je om gezondere voedselkeuzes te maken door je voedselinname bij te houden en te beoordelen. Je kunt voedsel toevoegen, calorieën bijhouden en je voortgang volgen.</p>
+                        </div>
+                    </div>
+                    
+                    
+
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            Hoe voeg ik voedsel toe aan mijn dagboek?
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Ga naar "Voedsel Loggen" en vul het formulier in met de naam van het voedsel, de hoeveelheid en eventueel een foto. Klik op "Voeg Toe" om het voedsel aan je dagboek toe te voegen.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            Hoe worden de voedselbeoordelingen berekend?
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Voedselbeoordelingen zijn gebaseerd op de voedingswaarde van het voedsel, waaronder calorieën, vetten, suikers en andere voedingsstoffen. Gezondere opties krijgen een hogere score.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            Kan ik mijn voortgang volgen?
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Ja, op het dashboard kun je je voortgang bekijken, inclusief je dagelijkse punten, niveau, reeks en gemiddelde score. Je kunt ook je voedselgeschiedenis bekijken.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            Hoe kan ik contact opnemen met ondersteuning?
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Je kunt het onderstaande contactformulier gebruiken om een bericht te sturen naar ons ondersteuningsteam. We streven ernaar binnen 24-48 uur te reageren.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <h3>Heeft u nog vragen?</h3>
+                    <form id="contact-form">
+                        <div class="form-group">
+                            <label for="contact-name">Naam</label>
+                            <input type="text" id="contact-name" name="name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contact-email">E-mailadres</label>
+                            <input type="email" id="contact-email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contact-subject">Onderwerp</label>
+                            <input type="text" id="contact-subject" name="subject" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contact-message">Bericht</label>
+                            <textarea id="contact-message" name="message" rows="5" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Verstuur
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load user info
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser) {
+                document.getElementById('sidebar-username').textContent = currentUser.name || currentUser.username;
+                if (currentUser.classCode) {
+                    document.getElementById('sidebar-class').textContent = `Klas: ${currentUser.classCode}`;
+                }
+                
+                // Pre-fill contact form with user data
+                if (document.getElementById('contact-name') && currentUser.name) {
+                    document.getElementById('contact-name').value = currentUser.name;
+                }
+                if (document.getElementById('contact-email') && currentUser.email) {
+                    document.getElementById('contact-email').value = currentUser.email;
+                }
+            } else {
+                // Redirect to login if not logged in
+                window.location.href = 'index.html';
+            }
+            
+            // Set up logout button
+            document.getElementById('logout-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            });
+            
+            // Set up mobile menu toggle
+            document.getElementById('menu-toggle').addEventListener('click', () => {
+                document.querySelector('.sidebar').classList.toggle('active');
+            });
+            
+            // Set up FAQ accordion
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const answer = question.nextElementSibling;
+                    const isOpen = answer.classList.contains('show');
+                    
+                    // Close all answers
+                    document.querySelectorAll('.faq-answer').forEach(item => {
+                        item.classList.remove('show');
+                    });
+                    
+                    // Toggle icons
+                    document.querySelectorAll('.faq-question i').forEach(icon => {
+                        icon.className = 'fas fa-chevron-down';
+                    });
+                    
+                    // Open clicked answer if it was closed
+                    if (!isOpen) {
+                        answer.classList.add('show');
+                        question.querySelector('i').className = 'fas fa-chevron-up';
+                    }
+                });
+            });
+            
+            // Set up contact form submission
+            const contactForm = document.getElementById('contact-form');
+            if (contactForm) {
+                contactForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(contactForm);
+                    const formObject = {};
+                    formData.forEach((value, key) => {
+                        formObject[key] = value;
+                    });
+                    
+                    try {
+                        // In a real app, you would send this to your backend
+                        console.log('Contact form submitted:', formObject);
+                        
+                        // Show success message
+                        alert('Bedankt voor uw bericht! We nemen zo snel mogelijk contact met u op.');
+                        contactForm.reset();
+                    } catch (error) {
+                        console.error('Error submitting contact form:', error);
+                        alert('Er is een fout opgetreden bij het verzenden van uw bericht. Probeer het later opnieuw.');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

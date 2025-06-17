@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SnackCheck</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="dashboard-page">
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>SnackCheck</h1>
+                <p>Gezond eten op school</p>
+            </div>
+            
+            <nav class="main-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="#" class="nav-item" data-page="food-log">
+                    <i class="fas fa-utensils"></i> Voedsel Loggen
+                </a>
+                <a href="#" class="nav-item" data-page="gallery">
+                    <i class="fas fa-images"></i> Gallery
+                </a>
+                <a href="#" class="nav-item" data-page="calorie-checker">
+                    <i class="fas fa-search"></i> Calorie Checker
+                </a>
+                <a href="#" class="nav-item" data-page="food-comparison">
+                    <i class="fas fa-balance-scale"></i> Voedsel Vergelijken
+                </a>
+                <a href="#" class="nav-item" data-page="my-stats">
+                    <i class="fas fa-chart-line"></i> Mijn Stats
+                </a>
+                <a href="#" class="nav-item" data-page="help">
+                    <i class="fas fa-question-circle"></i> Help
+                </a>
+                <a href="#" class="nav-item" data-page="questions">
+                    <i class="fas fa-comments"></i> Vragen
+                </a>
+            </nav>
+            
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-details">
+                    <span class="username" id="sidebar-username">Gebruiker</span>
+                    <span class="class-code" id="sidebar-class">Klas: -</span>
+                </div>
+                <button id="logout-btn" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <h2 id="page-title">Dashboard</h2>
+                <div class="date-display">
+                    <i class="far fa-calendar-alt"></i>
+                    <span id="current-date">15 juni 2025</span>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content" id="dashboard-page">
+                <div class="welcome-banner">
+                    <h3>Welkom terug, <span id="welcome-username">Gebruiker</span>! 👋</h3>
+                    <p>Wat heb jij vandaag gegeten?</p>
+                    <p><strong>Helaas werkt de stats pagina nog niet, waardoor je geen punten in het overzicht ziet, de score klopt wel.</strong> (We zijn bezig met een update)</p>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background-color: #e3f2fd;">
+                            <i class="fas fa-fire" style="color: #1976d2;"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="today-points">0</span>
+                            <span class="stat-label">Punten Vandaag</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background-color: #e8f5e9;">
+                            <i class="fas fa-trophy" style="color: #388e3c;"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="level">1</span>
+                            <span class="stat-label">Level</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background-color: #fff3e0;">
+                            <i class="fas fa-bolt" style="color: #f57c00;"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="streak">0</span>
+                            <span class="stat-label">Dag Streak</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background-color: #f3e5f5;">
+                            <i class="fas fa-utensils" style="color: #8e24aa;"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="avg-score">-</span>
+                            <span class="stat-label">Gem. Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h3>Snel Acties</h3>
+                    <div class="action-buttons">
+                        <button class="action-btn" id="quick-log-food">
+                            <i class="fas fa-plus-circle"></i>
+                            Voedsel Toevoegen
+                        </button>
+                        <button class="action-btn" id="quick-check-calories">
+                            <i class="fas fa-search"></i>
+                            Calorieën Checken
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="recent-activity">
+                    <div class="section-header">
+                        <h3>Recente Activiteit</h3>
+                        <a href="#" class="view-all">Bekijk alles</a>
+                    </div>
+                    <div class="activity-list" id="recent-activities">
+                        <div class="empty-state">
+                            <i class="fas fa-clipboard-list"></i>
+                            <p>Nog geen recente activiteiten</p>
+                            <small>Log je eerste maaltijd om te beginnen!</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Class Leaderboard -->
+                <div class="leaderboard">
+                    <div class="section-header">
+                        <h3>Klassement - Komt binnenkort</h3>
+                        <span class="class-tag" id="leaderboard-class">Klas: -</span>
+                    </div>
+                    <div class="leaderboard-list" id="class-leaderboard">
+                        <div class="leaderboard-item you">
+                            <span class="rank">-</span>
+                            <span class="name">Jij</span>
+                            <span class="points">0 punten</span>
+                        </div>
+                        <div class="empty-state">
+                            <i class="fas fa-users"></i>
+                            <p>Nog geen klasgenoten gevonden</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Food Log Page (initially hidden) -->
+            <div class="page-content" id="food-log-page" style="display: none;">
+                <h2>Voedsel Loggen</h2>
+                <div class="food-log-container">
+                    <form id="food-log-form" class="food-log-form">
+                        <div id="food-log-error" class="error-message" style="display: none; margin-bottom: 15px;"></div>
+                        
+                        <div class="form-group">
+                            <label for="food-name">Wat heb je gegeten? <span class="required">*</span></label>
+                            <input type="text" id="food-name" placeholder="Bijv. Banaan, broodje kaas, etc." required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="food-amount">Hoeveelheid (gram) <span class="required">*</span></label>
+                            <input type="number" id="food-amount" value="100" min="1" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="food-time">Tijdstip</label>
+                            <input type="time" id="food-time" value="">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Foto toevoegen (optioneel)</label>
+                            <div class="upload-area" id="upload-area">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Sleep een foto hierheen of klik om te uploaden</p>
+                                <input type="file" id="food-image" accept="image/*" style="display: none;">
+                            </div>
+                            <div id="image-preview" class="image-preview"></div>
+                        </div>
+                        
+                        <button type="submit" id="log-food-btn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Voeg Toe
+                        </button>
+                    </form>
+                    </div>
+                    
+                    <div class="food-log-history">
+                        <h3>Vandaag gegeten</h3>
+                        <div class="food-list" id="todays-food">
+                            <div class="empty-state">
+                                <i class="fas fa-utensils"></i>
+                                <p>Nog niets gegeten vandaag</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Other pages will be loaded here -->
+            <div class="page-content" id="gallery-page" style="display: none;">
+                <h2>Gallery</h2>
+                <p>Binnenkort beschikbaar</p>
+            </div>
+            
+            <div class="page-content" id="calorie-checker-page" style="display: none;">
+                <h2>Calorie Checker</h2>
+                <p>Binnenkort beschikbaar</p>
+            </div>
+            
+            <div class="page-content" id="food-comparison-page" style="display: none;">
+                <h2>Voedsel Vergelijken</h2>
+                <p>Binnenkort beschikbaar</p>
+            </div>
+            
+            <div class="page-content" id="my-stats-page" style="display: none;">
+                <h2>Mijn Statistieken</h2>
+                <p>Binnenkort beschikbaar</p>
+            </div>
+            
+            <div class="page-content" id="help-page" style="display: none;">
+                <h2>Help</h2>
+                <p>Binnenkort beschikbaar</p>
+            </div>
+            
+            <div class="page-content" id="questions-page" style="display: none;">
+                <h2>Vragen</h2>
+                <p>Binnenkort beschikbaar</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

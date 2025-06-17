@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voedsel Loggen - SnackCheck</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>SnackCheck</h1>
+                <button class="menu-toggle" id="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="food-loggen.html" class="nav-item active">
+                    <i class="fas fa-utensils"></i> Voedsel Loggen
+                </a>
+                <a href="gallery.html" class="nav-item">
+                    <i class="fas fa-images"></i> Gallery
+                </a>
+                <a href="calorie-checker.html" class="nav-item">
+                    <i class="fas fa-search"></i> Calorie Checker
+                </a>
+                <a href="food-comparison.html" class="nav-item">
+                    <i class="fas fa-balance-scale"></i> Voedsel Vergelijken
+                </a>
+                <a href="vragen.html" class="nav-item">
+                    <i class="fas fa-question-circle"></i> Vragen
+                </a>
+            </nav>
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-details">
+                    <span class="user-name" id="sidebar-username">Gebruiker</span>
+                    <span class="user-class" id="sidebar-class">Klas: -</span>
+                </div>
+                <button class="logout-btn" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="header-left">
+                    <h2>Voedsel Loggen</h2>
+                    <p class="current-date" id="current-date"></p>
+                    <p class="current-class" id="current-class"></p>
+                    <p class="current-user" id="current-user"></p>
+                    <p> <strong>Let op: Als je op "+Voeg toe" drukt wordt de voedsel WEL gelogd/opgeslagen maar niet op de website weergeven.(We zijn bezig met een update daarvoor)</strong></p>
+                </div>
+            </header>
+
+            <div class="content-container">
+                <div class="food-log-container">
+                    <div class="food-log-form">
+                        <h3>Voeg voedsel toe</h3>
+                        <div id="error-container"></div>
+                        <form id="food-log-form">
+                            <div class="form-group">
+                                <label for="food-name">Voedselnaam *</label>
+                                <input type="text" id="food-name" name="foodName" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="food-amount">Hoeveelheid (gram) *</label>
+                                <input type="number" id="food-amount" name="amount" min="1" value="100" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="food-time">Tijd</label>
+                                <input type="time" id="food-time" name="time">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="food-image">Foto toevoegen (optioneel)</label>
+                                <input type="file" id="food-image" name="image" accept="image/*" capture="environment">
+                                <div id="image-preview"></div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary" id="log-food-btn">
+                                <i class="fas fa-plus"></i> Voeg Toe
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="food-log-history">
+                        <h3>Vandaag gegeten</h3>
+                        <div class="food-list" id="todays-food">
+                            <div class="empty-state">
+                                <i class="fas fa-utensils"></i>
+                                <p>Nog niets gegeten vandaag</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set current date
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const now = new Date();
+            const formattedDate = now.toLocaleDateString('nl-NL', options);
+            document.getElementById('current-date').textContent = formattedDate;
+            
+            // Load user info
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser) {
+                document.getElementById('sidebar-username').textContent = currentUser.name || currentUser.username;
+                if (currentUser.classCode) {
+                    document.getElementById('sidebar-class').textContent = `Klas: ${currentUser.classCode}`;
+                }
+            } else {
+                // Redirect to login if not logged in
+                window.location.href = 'index.html';
+            }
+            
+            // Set up logout button
+            document.getElementById('logout-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            });
+            
+            // Set up mobile menu toggle
+            document.getElementById('menu-toggle').addEventListener('click', () => {
+                document.querySelector('.sidebar').classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnackCheck - Gezond Eten op School</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>SnackCheck</h1>
+                <p>Gezond eten op school</p>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero">
+                <h2>Onderzoek: Gezond Eten op School</h2>
+                <p>Welkom bij ons onderzoek naar gezond eten op school. Log in om deel te nemen en jouw eetgewoontes bij te houden! (V.5.3)</p>
+            </section>
+
+            <div class="login-container">
+                <h3>Inloggen</h3>
+                <p class="register-text"><strong>HET IS ANONIEM. </strong></p>
+                <p class="register-text"> </p>
+                <form id="loginForm" novalidate>
+                    <!-- Error container for login feedback -->
+                    <div id="errorContainer" class="error-message" role="alert" aria-live="assertive" style="display: none;"></div>
+                    
+                    <div class="form-group">
+                        <label for="username">Gebruikersnaam</label>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            required
+                            aria-required="true"
+                            autocomplete="username"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Wachtwoord</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            required
+                            aria-required="true"
+                            autocomplete="current-password"
+                        >
+                    </div>
+                    <button type="submit" class="btn btn-primary" aria-label="Inloggen">
+                        <span class="btn-text">Inloggen</span>
+                    </button>
+                </form>
+                <p class="register-text">Wij gebruiken deze inlog alleen maar om deelnemers te identificeren en de antworden te scheiden. Wij hebben alleen toegang tot wat jij invult, maar zien niet wie het invult. </p>
+            
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 SnackCheck - Schoolproject Gezond Eten - JOGG - Jong Leren Eten - Onderzoek</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

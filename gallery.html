@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recepten - SnackCheck</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .gallery-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+        
+        .gallery-container.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .gallery-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .gallery-item-info {
+            padding: 15px;
+            background: #fff;
+        }
+        
+        .gallery-item-title {
+            font-weight: 600;
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+        }
+        
+        .gallery-item-score {
+            display: inline-block;
+            background: #27ae60;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .gallery-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            padding: 6px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background: #27ae60;
+            color: white;
+            border-color: #27ae60;
+        }
+        
+        .empty-gallery {
+            text-align: center;
+            padding: 50px 20px;
+            grid-column: 1 / -1;
+        }
+        
+        .empty-gallery i {
+            font-size: 48px;
+            color: #95a5a6;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>SnackCheck</h1>
+                <button class="menu-toggle" id="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="food-loggen.html" class="nav-item">
+                    <i class="fas fa-utensils"></i> Voedsel Loggen
+                </a>
+                <a href="gallery.html" class="nav-item active">
+                    <i class="fas fa-images"></i> Gallery
+                </a>
+                <a href="calorie-checker.html" class="nav-item">
+                    <i class="fas fa-search"></i> Calorie Checker
+                </a>
+                <a href="food-comparison.html" class="nav-item">
+                    <i class="fas fa-balance-scale"></i> Voedsel Vergelijken
+                </a>
+                <a href="vragen.html" class="nav-item">
+                    <i class="fas fa-question-circle"></i> Vragen
+                </a>
+            </nav>
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-details">
+                    <span class="user-name" id="sidebar-username">Gebruiker</span>
+                    <span class="user-class" id="sidebar-class">Klas: -</span>
+                </div>
+                <button class="logout-btn" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="header-left">
+                    <h2>Voedsel Gallery</h2>
+                    <p>Bekijk gezonde voedselopties en hun scores</p>
+                </div>
+            </header>
+
+            <div class="content-container">
+                <div class="gallery-container">
+                    <div class="gallery-filters">
+                        <button class="filter-btn active" data-filter="all">Alles</button>
+                        <button class="filter-btn" data-filter="breakfast">Ontbijt</button>
+                        <button class="filter-btn" data-filter="lunch">Lunch</button>
+                        <button class="filter-btn" data-filter="dinner">Diner</button>
+                        <button class="filter-btn" data-filter="snack">Tussendoor</button>
+                    </div>
+                    
+                    <div class="gallery-grid" id="gallery-grid">
+                        <!-- Gallery items will be loaded here -->
+                        <div class="empty-gallery">
+                            <i class="fas fa-camera"></i>
+                            <h3>Nog geen voedselitems beschikbaar</h3>
+                            <p>Voeg voedsel toe aan je dagboek om het hier te zien verschijnen</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Recipe Detail View -->
+    <div class="recipe-detail" id="recipe-detail">
+        <button class="close-recipe" id="close-recipe">&times;</button>
+        <div class="recipe-header">
+            <img src="" alt="Recipe" id="recipe-detail-image">
+            <div class="recipe-header-overlay">
+                <h1 class="recipe-title" id="recipe-title">Recept Titel</h1>
+                <div class="recipe-meta">
+                    <span class="meta-item"><i class="fas fa-utensils"></i> <span id="recipe-servings">2 personen</span></span>
+                    <span class="meta-item"><i class="fas fa-clock"></i> <span id="recipe-time">15 min</span></span>
+                    <span class="meta-item"><i class="fas fa-fire"></i> <span id="recipe-calories">250 kcal</span></span>
+                    <span class="meta-item"><i class="fas fa-star"></i> <span id="recipe-score">9.0</span>/10</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="recipe-content">
+            <div class="recipe-instructions">
+                <h2 class="section-title">Bereidingswijze</h2>
+                <ol id="recipe-steps">
+                    <!-- Recipe steps will be inserted here -->
+                </ol>
+                
+                <div class="nutrition-facts">
+                    <h3 class="section-title">Voedingswaarden per portie</h3>
+                    <div class="nutrition-grid" id="nutrition-facts">
+                        <!-- Nutrition facts will be inserted here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="recipe-ingredients">
+                <h2 class="section-title">Ingrediënten</h2>
+                <ul class="ingredient-list" id="ingredient-list">
+                    <!-- Ingredients will be inserted here -->
+                </ul>
+                
+                <div class="health-tips" id="health-tips">
+                    <h3 class="section-title">Gezondheidstips</h3>
+                    <ul class="tips-list" id="tips-list">
+                        <!-- Health tips will be inserted here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample recipe data with detailed information
+        const recipes = [
+            {
+                id: 1,
+                name: 'Gezonde fruitsalade',
+                image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
+                category: 'breakfast',
+                score: 9.2,
+                time: 15,
+                servings: 2,
+                calories: 180,
+                nutrition: {
+                    koolhydraten: '32g',
+                    eiwitten: '2g',
+                    vetten: '1g',
+                    vezels: '5g',
+                    suikers: '24g',
+                    zout: '0.1g'
+                },
+                ingredients: [
+                    { amount: '1', unit: 'stuk', name: 'banaan' },
+                    { amount: '1', unit: 'stuk', name: 'appel' },
+                    { amount: '1', unit: 'schaaltje', name: 'aardbeien' },
+                    { amount: '1', unit: 'eetlepel', name: 'citroensap' },
+                    { amount: '1', unit: 'theelepel', name: 'honing' },
+                    { amount: '1', unit: 'snufje', name: 'kaneel' }
+                ],
+                steps: [
+                    'Was alle vruchten grondig.',
+                    'Snijd de banaan in plakjes en de appel in blokjes.',
+                    'Verwijder de kroontjes van de aardbeien en snijd ze in vieren.',
+                    'Meng alle vruchten in een kom.',
+                    'Besproei met citroensap en meng er de honing en kaneel door.',
+                    'Zet 10 minuten in de koelkast voordat je het serveert.'
+                ],
+                tips: [
+                    'Voeg noten of zaden toe voor extra eiwitten en gezonde vetten.',
+                    'Gebruik seizoensfruit voor de beste smaak en voedingswaarde.',
+                    'Voeg wat muntblaadjes toe voor een frisse smaak.'
+                ]
+            },
+            {
+                id: 2,
+                name: 'Avocado toast met ei',
+                image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
+                category: 'breakfast',
+                score: 8.7,
+                time: 10,
+                servings: 1,
+                calories: 320,
+                nutrition: {
+                    koolhydraten: '25g',
+                    eiwitten: '12g',
+                    vetten: '20g',
+                    vezels: '7g',
+                    suikers: '2g',
+                    zout: '0.8g'
+                },
+                ingredients: [
+                    { amount: '1/2', unit: 'stuk', name: 'rijpe avocado' },
+                    { amount: '1', unit: 'sneetje', name: 'volkoren brood' },
+                    { amount: '1', unit: 'stuk', name: 'ei' },
+                    { amount: '1', unit: 'snufje', name: 'zout en peper' },
+                    { amount: '1', unit: 'theelepel', name: 'olijfolie' },
+                    { amount: '1', unit: 'snufje', name: 'chilivlokken' }
+                ],
+                steps: [
+                    'Rooster het brood in een broodrooster of koekenpan tot het goudbruin is.',
+                    'Kook het ei zacht of hard naar wens.',
+                    'Snijd de avocado doormidden, verwijder de pit en schep het vruchtvlees in een kom.',
+                    'Prak de avocado fijn met een vork en breng op smaak met zout en peper.',
+                    'Bestrijk het geroosterde brood met de geprakte avocado.',
+                    'Leg het ei erop en bestrooi met chilivlokken en eventueel wat extra zout.'
+                ],
+                tips: [
+                    'Voeg wat kiemen of rucola toe voor extra knapperigheid.',
+                    'Besproei met een beetje citroensap om verkleuren van de avocado te voorkomen.',
+                    'Voeg wat feta of geitenkaas toe voor een extra smaakdimensie.'
+                ]
+            },
+            {
+                id: 3,
+                name: 'Griekse salade',
+                image: 'https://images.unsplash.com/photo-1547592180-85f173990554?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
+                category: 'lunch',
+                score: 8.5,
+                time: 15,
+                servings: 2,
+                calories: 280,
+                nutrition: {
+                    koolhydraten: '15g',
+                    eiwitten: '8g',
+                    vetten: '22g',
+                    vezels: '4g',
+                    suikers: '6g',
+                    zout: '1.2g'
+                },
+                ingredients: [
+                    { amount: '1', unit: 'komkommer', name: 'in blokjes' },
+                    { amount: '2', unit: 'tomaten', name: 'in blokjes' },
+                    { amount: '1', unit: 'rode ui', name: 'in dunne ringen' },
+                    { amount: '150', unit: 'g', name: 'feta' },
+                    { amount: '10', unit: 'stuks', name: 'zwarte olijven' },
+                    { amount: '2', unit: 'eetlepels', name: 'olijfolie' },
+                    { amount: '1', unit: 'eetlepel', name: 'citroensap' },
+                    { amount: '1', unit: 'theelepel', name: 'gedroogde oregano' },
+                    { amount: '1', unit: 'snufje', name: 'zout en peper' }
+                ],
+                steps: [
+                    'Snijd alle groenten in gelijke stukken.',
+                    'Meng de komkommer, tomaat, rode ui en olijven in een grote kom.',
+                    'Verbrokkel de feta erboven.',
+                    'Maak een dressing van olijfolie, citroensap, oregano, zout en peper.',
+                    'Besproei de salade met de dressing en meng voorzichtig.'
+                ],
+                tips: [
+                    'Voeg wat verse basilicum of peterselie toe voor extra smaak.',
+                    'Laat de salade 10 minuten staan voor het serveren, zodat de smaken goed kunnen intrekken.',
+                    'Voeg eventueel wat kappertjes toe voor een extra smaakdimensie.'
+                ]
+            },
+            {
+                id: 4,
+                name: 'Quinoa salade met zoete aardappel',
+                image: 'https://images.unsplash.com/photo-1512058564366-18510e2e6996?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
+                category: 'lunch',
+                score: 9.1,
+                time: 30,
+                servings: 3,
+                calories: 320,
+                nutrition: {
+                    koolhydraten: '45g',
+                    eiwitten: '9g',
+                    vetten: '12g',
+                    vezels: '8g',
+                    suikers: '10g',
+                    zout: '0.5g'
+                },
+                ingredients: [
+                    { amount: '200', unit: 'g', name: 'quinoa' },
+                    { amount: '1', unit: 'middelgrote', name: 'zoete aardappel' },
+                    { amount: '1', unit: 'blikje', name: 'zwarte bonen' },
+                    { amount: '1', unit: 'rode paprika', name: 'in blokjes' },
+                    { amount: '1', unit: 'avocado', name: 'in blokjes' },
+                    { amount: 'handje', unit: '', name: 'verse koriander' },
+                    { amount: '2', unit: 'eetlepels', name: 'olijfolie' },
+                    { amount: '1', unit: 'limoen', name: 'sap en rasp' },
+                    { amount: '1', unit: 'theelepel', name: 'komijn' },
+                    { amount: '1', unit: 'snufje', name: 'zout en peper' }
+                ],
+                steps: [
+                    'Kook de quinoa volgens de aanwijzingen op de verpakking en laat afkoelen.',
+                    'Verwarm de oven voor op 200°C. Schil de zoete aardappel en snijd in blokjes van 2 cm.',
+                    'Meng de zoete aardappel met 1 eetlepel olijfolie, komijn, zout en peper. Rooster 20-25 min in de oven.',
+                    'Maak een dressing van de rest van de olijfolie, limoensap, limoenrasp, zout en peper.',
+                    'Meng de afgekoelde quinoa met de geroosterde zoete aardappel, uitgelekte zwarte bonen, paprika en avocado.',
+                    'Besprenkel met de dressing en bestrooi met verse koriander.'
+                ],
+                tips: [
+                    'Voeg wat feta of geitenkaas toe voor extra smaak.',
+                    'Lekker met wat geroosterde pompoenpitten of zonnebloempitten voor extra crunch.',
+                    'Kan zowel warm als koud gegeten worden.'
+                ]
+            },
+            {
+                id: 5,
+                name: 'Groene smoothie bowl',
+                image: 'https://images.unsplash.com/photo-1546069901-4d5df1fca1cc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
+                category: 'breakfast',
+                score: 8.8,
+                time: 10,
+                servings: 1,
+                calories: 280,
+                nutrition: {
+                    koolhydraten: '45g',
+                    eiwitten: '8g',
+                    vetten: '10g',
+                    vezels: '9g',
+                    suikers: '28g',
+                    zout: '0.2g'
+                },
+                ingredients: [
+                    { amount: '1', unit: 'rijpe banaan', name: 'in stukjes' },
+                    { amount: '1', unit: 'handje', name: 'verse spinazie' },
+                    { amount: '1', unit: 'eetlepel', name: 'pindakaas' },
+                    { amount: '150', unit: 'ml', name: 'amandelmelk' },
+                    { amount: '1', unit: 'eetlepel', name: 'chiazaad' },
+                    { amount: '1', unit: 'theelepel', name: 'lijnzaad' },
+                    { amount: '', unit: 'optioneel', name: 'ahornsiroop of honing' },
+                    { amount: '', unit: 'garnering', name: 'vers fruit, noten, kokosrasp' }
+                ],
+                steps: [
+                    'Doe de banaan, spinazie, pindakaas en amandelmelk in een krachtige blender.',
+                    'Voeg eventueel een scheutje water toe als het mengsel te dik is.',
+                    'Blend tot een glad geheel. Proef en voeg eventueel wat ahornsiroop of honing toe voor extra zoetigheid.',
+                    'Giet in een kom en garneer met vers fruit, noten, zaden en kokosrasp naar keuze.'
+                ],
+                tips: [
+                    'Voek wat diepvriesmango of -bessen toe voor een koude, verfrissende smoothie.',
+                    'Bewaar in de koelkast tot maximaal 1 dag in een afgesloten bakje.',
+                    'Voek een schepje eiwitpoeder toe voor een eiwitrijke maaltijd.'
+                ]
+            },
+            {
+                id: 6,
+                name: 'Geroosterde groenten met kruidenquinoa',
+                image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
+                category: 'dinner',
+                score: 8.2,
+                time: 40,
+                servings: 4,
+                calories: 320,
+                nutrition: {
+                    koolhydraten: '42g',
+                    eiwitten: '10g',
+                    vetten: '14g',
+                    vezels: '12g',
+                    suikers: '8g',
+                    zout: '0.6g'
+                },
+                ingredients: [
+                    { amount: '200', unit: 'g', name: 'quinoa' },
+                    { amount: '1', unit: 'rode paprika', name: 'in stukken' },
+                    { amount: '1', unit: 'courgette', name: 'in plakken' },
+                    { amount: '1', unit: 'rode ui', name: 'in partjes' },
+                    { amount: '200', unit: 'g', name: 'champignons' },
+                    { amount: '200', unit: 'g', name: 'cherrytomaten' },
+                    { amount: '3', unit: 'eetlepels', name: 'olijfolie' },
+                    { amount: '2', unit: 'teentjes', name: 'knoflook' },
+                    { amount: '1', unit: 'eetlepel', name: 'gedroogde Italiaanse kruiden' },
+                    { amount: '1', unit: 'handje', name: 'verse basilicum' },
+                    { amount: '50', unit: 'g', name: 'geitenkaas' },
+                    { amount: '1', unit: 'snufje', name: 'zout en peper' }
+                ],
+                steps: [
+                    'Verwarm de oven voor op 200°C. Kook de quinoa volgens de aanwijzingen op de verpakking.',
+                    'Meng alle groenten (behalve de knoflook en tomaten) met 2 eetlepels olijfolie, de Italiaanse kruiden, zout en peper.',
+                    'Verdeel over een met bakpapier beklede bakplaat en rooster 20 minuten in de oven.',
+                    'Voek de knoflook en cherrytomaten toe en rooster nog 10 minuten tot de groenten zacht en licht geroosterd zijn.',
+                    'Meng de gare quinoa met de resterende olijfolie, versgemalen zwarte peper en versnipperde basilicum.',
+                    'Schep de geroosterde groenten erdoor en verkruimel er wat geitenkaas over.'
+                ],
+                tips: [
+                    'Lekker met een scheutje balsamico-azijn of citroensap voor het serveren.',
+                    'Voek wat pijnboompitten of walnoten toe voor extra crunch.',
+                    'Blijft goed in de koelkast tot 3 dagen en is ideaal als lunch de volgende dag.'
+                ]
+            }
+        ];
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load user info
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser) {
+                document.getElementById('sidebar-username').textContent = currentUser.name || currentUser.username;
+                if (currentUser.classCode) {
+                    document.getElementById('sidebar-class').textContent = `Klas: ${currentUser.classCode}`;
+                }
+            } else {
+                // Redirect to login if not logged in
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Set up logout button
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem('currentUser');
+                    localStorage.removeItem('token');
+                    window.location.href = 'index.html';
+                });
+            }
+        });
+        // Function to update recipe details
+        function updateRecipeDetails(recipe) {
+            if (!recipe) return;
+            
+            // Update recipe steps
+            if (recipe.steps) {
+                const stepsList = document.getElementById('recipe-steps');
+                if (stepsList) {
+                    stepsList.innerHTML = recipe.steps.map(step => 
+                        `<li>${step}</li>`
+                    ).join('');
+                }
+            }
+            
+            // Update nutrition facts
+            if (recipe.nutrition) {
+                const nutritionGrid = document.getElementById('nutrition-facts');
+                if (nutritionGrid) {
+                    nutritionGrid.innerHTML = Object.entries(recipe.nutrition)
+                        .map(([key, value]) => (
+                            `<div class="nutrition-item">
+                                <div class="nutrition-value">${value}</div>
+                                <div class="nutrition-label">${key}</div>
+                            </div>`
+                        )).join('');
+                }
+            }
+            
+            // Update health tips
+            if (recipe.tips) {
+                const tipsList = document.getElementById('tips-list');
+                if (tipsList) {
+                    tipsList.innerHTML = recipe.tips.map(tip => 
+                        `<li><i class="fas fa-lightbulb"></i> ${tip}</li>`
+                    ).join('');
+                }
+            }
+        }
+        
+        // Function to show recipe detail
+        function showRecipeDetail(recipe) {
+            const galleryContainer = document.querySelector('.gallery-container');
+            const detailView = document.getElementById('recipe-detail');
+            
+            if (!galleryContainer || !detailView) return;
+            
+            // Update recipe details in the modal
+            updateRecipeDetails(recipe);
+            
+            // Show the detail view
+            galleryContainer.classList.add('hidden');
+            detailView.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Function to close recipe detail
+        function closeRecipeDetail() {
+            const detailView = document.getElementById('recipe-detail');
+            const galleryContainer = document.querySelector('.gallery-container');
+            
+            detailView.classList.remove('active');
+            galleryContainer.classList.remove('hidden');
+            document.body.style.overflow = '';
+            
+            // Scroll back to the gallery
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Function to create recipe card
+        function createRecipeCard(recipe) {
+            const card = document.createElement('div');
+            card.className = 'gallery-item';
+            card.innerHTML = `
+                <div class="gallery-item-image">
+                    <img src="${recipe.image}" alt="${recipe.name}" loading="lazy">
+                    <div class="gallery-item-badge">
+                        <i class="fas fa-star"></i> ${recipe.score.toFixed(1)}
+                    </div>
+                </div>
+                <div class="gallery-item-info">
+                    <h3 class="gallery-item-title">${recipe.name}</h3>
+                    <div class="gallery-item-meta">
+                        <span class="gallery-item-calories">
+                            <i class="fas fa-fire"></i> ${recipe.calories} kcal
+                        </span>
+                        <span class="gallery-item-time">
+                            <i class="far fa-clock"></i> ${recipe.time} min
+                        </span>
+                    </div>
+                </div>
+            `;
+            
+            card.addEventListener('click', () => showRecipeDetail(recipe));
+            return card;
+        }
+        
+        // Function to load gallery items
+        function loadGalleryItems(filter = 'all') {
+            const galleryGrid = document.getElementById('gallery-grid');
+            
+            // Show loading state
+            galleryGrid.innerHTML = `
+                <div class="empty-gallery">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Recepten laden...</p>
+                </div>
+            `;
+            
+            // Filter items
+            const filteredItems = filter === 'all' 
+                ? recipes 
+                : recipes.filter(item => item.category === filter);
+            
+            // Clear existing items
+            galleryGrid.innerHTML = '';
+            
+            if (filteredItems.length === 0) {
+                galleryGrid.innerHTML = `
+                    <div class="empty-gallery">
+                        <i class="fas fa-utensils"></i>
+                        <h3>Geen recepten gevonden</h3>
+                        <p>Er zijn geen recepten beschikbaar in deze categorie</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Add filtered items with animation
+            filteredItems.forEach((item, index) => {
+                const card = createRecipeCard(item);
+                card.style.animationDelay = `${index * 0.1}s`;
+                galleryGrid.appendChild(card);
+            });
+        }
+        
+        // Initialize the gallery
+        function initGallery() {
+            try {
+                // Initial load
+                loadGalleryItems();
+                
+                // Add click event to filter buttons
+                document.querySelectorAll('.filter-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        
+                        // Update active state
+                        document.querySelectorAll('.filter-btn').forEach(btn => 
+                            btn.classList.remove('active')
+                        );
+                        button.classList.add('active');
+                        
+                        // Filter items
+                        const filter = button.getAttribute('data-filter');
+                        loadGalleryItems(filter);
+                        
+                        // Scroll to top
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                    });
+                });
+                
+                // Close recipe detail
+                const closeButton = document.getElementById('close-recipe');
+                if (closeButton) {
+                    closeButton.addEventListener('click', closeRecipeDetail);
+                }
+                
+                // Close on escape key
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        closeRecipeDetail();
+                    }
+                });
+                
+                // Close on click outside
+                const recipeDetail = document.getElementById('recipe-detail');
+                if (recipeDetail) {
+                    recipeDetail.addEventListener('click', (e) => {
+                        if (e.target === recipeDetail) {
+                            closeRecipeDetail();
+                        }
+                    });
+                }
+                
+                // Load current user info if available
+                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                if (currentUser) {
+                    const usernameElement = document.getElementById('sidebar-username');
+                    if (usernameElement) {
+                        usernameElement.textContent = currentUser.username;
+                    }
+                    
+                    // Set up mobile menu toggle
+                    const menuToggle = document.getElementById('menu-toggle');
+                    if (menuToggle) {
+                        menuToggle.addEventListener('click', () => {
+                            const sidebar = document.querySelector('.sidebar');
+                            if (sidebar) sidebar.classList.toggle('active');
+                        });
+                    }
+                    
+                    // Set up logout button
+                    const logoutBtn = document.getElementById('logout-btn');
+                    if (logoutBtn) {
+                        logoutBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            localStorage.removeItem('currentUser');
+                            localStorage.removeItem('token');
+                            window.location.href = 'index.html';
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error initializing gallery:', error);
+            }
+        }
+        
+        // Initialize the gallery when DOM is loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initGallery);
+        } else {
+            initGallery();
+        }
+    </script>
+</body>
+</html>
+        

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voedsel Vergelijken - SnackCheck</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .comparison-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .comparison-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .comparison-header h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .comparison-header p {
+            color: #7f8c8d;
+            margin: 0;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .comparison-item {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .comparison-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .food-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            overflow: hidden;
+            border: 3px solid #f1f2f6;
+        }
+        
+        .food-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .food-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 10px 0 5px;
+            color: #2c3e50;
+        }
+        
+        .food-category {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .nutrition-facts {
+            text-align: left;
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        
+        .nutrition-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .nutrition-label {
+            color: #7f8c8d;
+        }
+        
+        .nutrition-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .nutrition-value.better {
+            color: #27ae60;
+        }
+        
+        .nutrition-value.worse {
+            color: #e74c3c;
+        }
+        
+        .score-badge {
+            display: inline-block;
+            background: #27ae60;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .versus {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #7f8c8d;
+        }
+        
+        .comparison-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn-outline {
+            background: white;
+            border: 2px solid #27ae60;
+            color: #27ae60;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline:hover {
+            background: #f1f9f1;
+        }
+        
+        .btn-primary {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #219653;
+        }
+        
+        .select-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .select-wrapper select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237f8c8d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 12px;
+            cursor: pointer;
+        }
+        
+        .select-wrapper:after {
+            content: '';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+        
+        .comparison-result {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .comparison-result h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .result-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #34495e;
+        }
+        
+        .highlight {
+            font-weight: 600;
+            color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>SnackCheck</h1>
+                <button class="menu-toggle" id="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="food-loggen.html" class="nav-item">
+                    <i class="fas fa-utensils"></i> Voedsel Loggen
+                </a>
+                <a href="gallery.html" class="nav-item">
+                    <i class="fas fa-images"></i> Gallery
+                </a>
+                <a href="calorie-checker.html" class="nav-item">
+                    <i class="fas fa-search"></i> Calorie Checker
+                </a>
+                <a href="food-comparison.html" class="nav-item active">
+                    <i class="fas fa-balance-scale"></i> Voedsel Vergelijken
+                </a>
+                <a href="vragen.html" class="nav-item">
+                    <i class="fas fa-question-circle"></i> Vragen
+                </a>
+            </nav>
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-details">
+                    <span class="user-name" id="sidebar-username">Gebruiker</span>
+                    <span class="user-class" id="sidebar-class">Klas: -</span>
+                </div>
+                <button class="logout-btn" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="header-left">
+                    <h2>Voedsel Vergelijken</h2>
+                    <p>Vergelijk voedingswaarden van verschillende voedingsmiddelen</p>
+                </div>
+            </header>
+
+            <div class="content-container">
+                <div class="comparison-container">
+                    <div class="select-wrapper">
+                        <select id="food-category">
+                            <option value="">Selecteer een categorie</option>
+                            <option value="fruit">Fruit</option>
+                            <option value="vegetables">Groenten</option>
+                            <option value="dairy">Zuivel</option>
+                            <option value="meat">Vlees & Vis</option>
+                            <option value="grains">Granen</option>
+                            <option value="snacks">Snacks</option>
+                        </select>
+                    </div>
+                    
+                    <div class="comparison-grid">
+                        <!-- Food Item 1 -->
+                        <div class="comparison-item">
+                            <div class="food-image">
+                                <img src="https://images.unsplash.com/photo-1571771574825-974f70d1ace3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Appel">
+                            </div>
+                            <h3 class="food-name">Appel</h3>
+                            <span class="food-category">Fruit</span>
+                            <div class="score-badge">7.5/10</div>
+                            
+                            <div class="nutrition-facts">
+                                <div class="nutrition-item">
+                                    <span class="nutrition-label">Calorieën</span>
+                                    <span class="nutrition-value better">52 kcal</span>
+                                </div>
+                                <div class="nutrition-item">
+                                    <span class="nutrition-label">Eiwitten</span>
+                                    <span class="nutrition-value">0.3g</span>
+                                </div>
+                                <div class="nutrition-item">
+                                    <span class="nutrition-label">Koolhydraten</span>
+                                    <span class="nutrition-value worse">14g</span>
+                                </div>
+                                <div class="nutrition-item">
+                                    <span class="nutrition-label">Vetten</span>
+                                    <span class="nutrition-value better">0.2g</span>
+                                </div>
+                                <div class="nutrition-item">
+                                    <span class="nutrition-label">Vezels</span>
+                                    <span class="nutrition-value better">2.4g</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="versus">vs</div>
+                        
+                        <!-- Food Item 2 -->
+                        <div class="comparison-item">
+                            <div class="food-image">
+                                <img src="https://images.unsplash.com/photo-1546069901-d5bfd2cbfb1f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Chocoladekoekje">
+                            </div>
+                            <h3 class="food-name">Chocoladekoekje</h3>
+                            <span class="food-category">Snack</span>
+                            <div class="score-badge">3.2/10</div>
+                            
+                            <div class="nutrition-facts">
+                                <div class="nutrition-item">
+                                    <span class="nutrition-label">Calorieën</span>
+                                    <span class="nutrition-value worse">210 kcal</span>
+                                </div>
+                                <div class="nutrition-item">
+                                    <span class="nutrition-label">Eiwitten</span>
+                                    <span class="nutrition-value">2g</span>
+                                </div>
+                                <div class="nutrition-item">
+                                    <span class="nutrition-label">Koolhydraten</span>
+                                    <span class="nutrition-value worse">30g</span>
+                                </div>
+                                <div class="nutrition-item">
+                                    <span class="nutrition-label">Vetten</span>
+                                    <span class="nutrition-value worse">10g</span>
+                                </div>
+                                <div class="nutrition-item">
+                                    <span class="nutrition-label">Vezels</span>
+                                    <span class="nutrition-value">1g</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-actions">
+                        <button class="btn-outline" id="swap-foods">
+                            <i class="fas fa-random"></i> Wissel
+                        </button>
+                        <button class="btn-primary" id="compare-btn">
+                            <i class="fas fa-balance-scale"></i> Vergelijk
+                        </button>
+                    </div>
+                    
+                    <div class="comparison-result" id="comparison-result">
+                        <h3>Vergelijkingsresultaat</h3>
+                        <div class="result-text" id="result-text">
+                            <!-- Result text will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Food database for comparison
+        const foodDatabase = [
+            {
+                id: 1,
+                name: 'Appel',
+                category: 'fruit',
+                image: 'https://images.unsplash.com/photo-1571771574825-974f70d1ace3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+                calories: 52,
+                protein: 0.3,
+                carbs: 14,
+                fat: 0.2,
+                fiber: 2.4,
+                score: 7.5,
+                description: 'Een gezonde keuze vol vezels en vitamine C.'
+            },
+            {
+                id: 2,
+                name: 'Chocoladekoekje',
+                category: 'snacks',
+                image: 'https://images.unsplash.com/photo-1546069901-d5bfd2cbfb1f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+                calories: 210,
+                protein: 2,
+                carbs: 30,
+                fat: 10,
+                fiber: 1,
+                score: 3.2,
+                description: 'Bevat veel toegevoegde suikers en verzadigde vetten.'
+            },
+            {
+                id: 3,
+                name: 'Banaan',
+                category: 'fruit',
+                image: 'https://images.unsplash.com/photo-1571771574825-974f70d1ace3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+                calories: 89,
+                protein: 1.1,
+                carbs: 22.8,
+                fat: 0.3,
+                fiber: 2.6,
+                score: 8.0,
+                description: 'Rijk aan kalium en natuurlijke suikers voor een snelle energieboost.'
+            },
+            {
+                id: 4,
+                name: 'Chips',
+                category: 'snacks',
+                image: 'https://images.unsplash.com/photo-1576477881558-3d2b7f1a7a5f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+                calories: 536,
+                protein: 7,
+                carbs: 53,
+                fat: 35,
+                fiber: 4.5,
+                score: 2.5,
+                description: 'Hoog in calorieën, vet en zout. Bevat weinig voedingsstoffen.'
+            },
+            {
+                id: 5,
+                name: 'Wortelen',
+                category: 'vegetables',
+                image: 'https://images.unsplash.com/photo-1447175008436-054170c2e979?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+                calories: 41,
+                protein: 0.9,
+                carbs: 9.6,
+                fat: 0.2,
+                fiber: 2.8,
+                score: 9.0,
+                description: 'Uitstekende bron van bètacaroteen, vezels en vitamine K.'
+            },
+            {
+                id: 6,
+                name: 'Chocoladereep',
+                category: 'snacks',
+                image: 'https://images.unsplash.com/photo-1571115177091-9c7d1f8f4d9f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+                calories: 546,
+                protein: 4.9,
+                carbs: 61.2,
+                fat: 31.3,
+                fiber: 3.4,
+                score: 3.0,
+                description: 'Hoog in suiker en verzadigde vetten. Bevat weinig voedingsstoffen.'
+            },
+            {
+                id: 7,
+                name: 'Griekse yoghurt',
+                category: 'dairy',
+                image: 'https://images.unsplash.com/photo-1551029506-0815fdb2281b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+                calories: 59,
+                protein: 10,
+                carbs: 3.6,
+                fat: 0.4,
+                fiber: 0,
+                score: 8.5,
+                description: 'Uitstekende bron van eiwitten en probiotica voor een gezonde spijsvertering.'
+            },
+            {
+                id: 8,
+                name: 'Volkorenbrood',
+                category: 'grains',
+                image: 'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+                calories: 247,
+                protein: 13,
+                carbs: 41,
+                fat: 3.4,
+                fiber: 7,
+                score: 7.8,
+                description: 'Goede bron van vezels en complexe koolhydraten voor langdurige energie.'
+            },
+            {
+                id: 9,
+                name: 'Kipfilet',
+                category: 'meat',
+                image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+                calories: 165,
+                protein: 31,
+                carbs: 0,
+                fat: 3.6,
+                fiber: 0,
+                score: 8.2,
+                description: 'Mager vlees dat rijk is aan eiwitten en essentiële aminozuren.'
+            },
+            {
+                id: 10,
+                name: 'Zalm',
+                category: 'meat',
+                image: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+                calories: 206,
+                protein: 25.4,
+                carbs: 0,
+                fat: 12.4,
+                fiber: 0,
+                score: 9.2,
+                description: 'Uitstekende bron van omega-3 vetzuren die goed zijn voor hart en hersenen.'
+            }
+        ];
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load user info
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser) {
+                document.getElementById('sidebar-username').textContent = currentUser.name || currentUser.username;
+                if (currentUser.classCode) {
+                    document.getElementById('sidebar-class').textContent = `Klas: ${currentUser.classCode}`;
+                }
+            } else {
+                // Redirect to login if not logged in
+                window.location.href = 'index.html';
+            }
+            
+            // Set up logout button
+            document.getElementById('logout-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            });
+            
+            // Set up mobile menu toggle
+            document.getElementById('menu-toggle').addEventListener('click', () => {
+                document.querySelector('.sidebar').classList.toggle('active');
+            });
+            
+            // Current comparison state
+            let currentFood1 = foodDatabase[0]; // Default to first food
+            let currentFood2 = foodDatabase[1]; // Default to second food
+            
+            // DOM elements
+            const foodCategorySelect = document.getElementById('food-category');
+            const compareBtn = document.getElementById('compare-btn');
+            const swapBtn = document.getElementById('swap-foods');
+            const resultSection = document.getElementById('comparison-result');
+            const resultText = document.getElementById('result-text');
+            
+            // Initialize the comparison with default foods
+            updateComparisonUI();
+            
+            // Event listeners
+            foodCategorySelect.addEventListener('change', filterFoods);
+            compareBtn.addEventListener('click', compareFoods);
+            swapBtn.addEventListener('click', swapFoods);
+            
+            // Filter foods based on category
+            function filterFoods() {
+                const category = foodCategorySelect.value;
+                if (!category) return;
+                
+                const filteredFoods = foodDatabase.filter(food => food.category === category);
+                if (filteredFoods.length >= 2) {
+                    currentFood1 = filteredFoods[0];
+                    currentFood2 = filteredFoods[1];
+                    updateComparisonUI();
+                } else {
+                    alert('Niet genoeg voedingsmiddelen in deze categorie om te vergelijken.');
+                }
+            }
+            
+            // Swap the two foods being compared
+            function swapFoods() {
+                const temp = currentFood1;
+                currentFood1 = currentFood2;
+                currentFood2 = temp;
+                updateComparisonUI();
+            }
+            
+            // Compare the two foods and show results
+            function compareFoods() {
+                // Calculate differences
+                const calorieDiff = currentFood1.calories - currentFood2.calories;
+                const proteinDiff = currentFood1.protein - currentFood2.protein;
+                const carbDiff = currentFood1.carbs - currentFood2.carbs;
+                const fatDiff = currentFood1.fat - currentFood2.fat;
+                const fiberDiff = currentFood1.fiber - currentFood2.fiber;
+                const scoreDiff = currentFood1.score - currentFood2.score;
+                
+                // Determine which food is healthier
+                let healthierFood, lessHealthyFood;
+                if (scoreDiff > 0) {
+                    healthierFood = currentFood1;
+                    lessHealthyFood = currentFood2;
+                } else {
+                    healthierFood = currentFood2;
+                    lessHealthyFood = currentFood1;
+                }
+                
+                // Generate comparison text
+                let comparisonText = `De <span class="highlight">${healthierFood.name.toLowerCase()}</span> is een betere keuze dan ${lessHealthyFood.name.toLowerCase()} `;
+                comparisonText += `met een score van ${healthierFood.score}/10 versus ${lessHealthyFood.score}/10. `;
+                
+                // Add specific comparisons
+                const comparisons = [];
+                
+                if (Math.abs(calorieDiff) > 50) {
+                    comparisons.push(`bevat ${Math.abs(calorieDiff)}% ${calorieDiff < 0 ? 'minder' : 'meer'} calorieën`);
+                }
+                
+                if (Math.abs(proteinDiff) > 2) {
+                    comparisons.push(`${Math.abs(proteinDiff)}g ${proteinDiff > 0 ? 'meer' : 'minder'} eiwitten`);
+                }
+                
+                if (Math.abs(fiberDiff) > 1) {
+                    comparisons.push(`${Math.abs(fiberDiff)}g ${fiberDiff > 0 ? 'meer' : 'minder'} vezels`);
+                }
+                
+                if (comparisons.length > 0) {
+                    comparisonText += `Het bevat ${comparisons.join(', ')}. `;
+                }
+                
+                // Add food-specific descriptions
+                comparisonText += healthierFood.description;
+                
+                // Update the UI
+                resultText.innerHTML = comparisonText;
+                resultSection.style.display = 'block';
+                
+                // Scroll to results
+                resultSection.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // Update the UI with current food comparison
+            function updateComparisonUI() {
+                // Update food 1
+                document.querySelector('.comparison-item:nth-child(1) .food-name').textContent = currentFood1.name;
+                document.querySelector('.comparison-item:nth-child(1) .food-category').textContent = 
+                    currentFood1.category.charAt(0).toUpperCase() + currentFood1.category.slice(1);
+                document.querySelector('.comparison-item:nth-child(1) .score-badge').textContent = 
+                    `${currentFood1.score}/10`;
+                document.querySelector('.comparison-item:nth-child(1) .food-image img').src = currentFood1.image;
+                document.querySelector('.comparison-item:nth-child(1) .food-image img').alt = currentFood1.name;
+                
+                // Update food 2
+                document.querySelector('.comparison-item:nth-child(3) .food-name').textContent = currentFood2.name;
+                document.querySelector('.comparison-item:nth-child(3) .food-category').textContent = 
+                    currentFood2.category.charAt(0).toUpperCase() + currentFood2.category.slice(1);
+                document.querySelector('.comparison-item:nth-child(3) .score-badge').textContent = 
+                    `${currentFood2.score}/10`;
+                document.querySelector('.comparison-item:nth-child(3) .food-image img').src = currentFood2.image;
+                document.querySelector('.comparison-item:nth-child(3) .food-image img').alt = currentFood2.name;
+                
+                // Update nutrition facts for food 1
+                updateNutritionFacts(1, currentFood1);
+                updateNutritionFacts(3, currentFood2);
+                
+                // Hide result section when changing foods
+                resultSection.style.display = 'none';
+            }
+            
+            // Update nutrition facts for a food item
+            function updateNutritionFacts(itemNumber, food) {
+                const container = document.querySelector(`.comparison-item:nth-child(${itemNumber}) .nutrition-facts`);
+                
+                container.innerHTML = `
+                    <div class="nutrition-item">
+                        <span class="nutrition-label">Calorieën</span>
+                        <span class="nutrition-value">${food.calories} kcal</span>
+                    </div>
+                    <div class="nutrition-item">
+                        <span class="nutrition-label">Eiwitten</span>
+                        <span class="nutrition-value">${food.protein}g</span>
+                    </div>
+                    <div class="nutrition-item">
+                        <span class="nutrition-label">Koolhydraten</span>
+                        <span class="nutrition-value">${food.carbs}g</span>
+                    </div>
+                    <div class="nutrition-item">
+                        <span class="nutrition-label">Vetten</span>
+                        <span class="nutrition-value">${food.fat}g</span>
+                    </div>
+                    <div class="nutrition-item">
+                        <span class="nutrition-label">Vezels</span>
+                        <span class="nutrition-value">${food.fiber}g</span>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
